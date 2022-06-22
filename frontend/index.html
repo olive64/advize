@@ -1,0 +1,47 @@
+<html>
+
+  <head>
+    <script type="text/javascript">
+      function shortUrl(url) {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        var apiUrl = 'http://localhost:6001/url';
+
+        var raw = JSON.stringify({"originUrl": url});
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch(apiUrl, requestOptions)
+          .then(response => response.json())
+          .then(result => {
+            const box = document.getElementById('result')
+            var resultText
+            if (result.status === "OK") {
+              resultText = "<span style='color:green;'>ShortUrl : </span><a href='" + result.short_url + "' target='_blank' title='Click to open url'>" + result.short_url + "</a>"
+            } else {
+              resultText = "<span style='color:red;'>Error : " + result.error + "</span>"
+            }
+            box.innerHTML = resultText
+          })
+          .catch(error => console.log('error', error));
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Short Url</h1>
+    <form action="Javascript:shortUrl(originUrl.value)">
+      <label>Enter URL
+      </label>
+      <input type="text" name="originUrl" id="originUrl" size="48">
+      <input type="submit" value="Generate a shorturl">
+    </form>
+    <p id="result"></p>
+  </body>
+
+</html>
